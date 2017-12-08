@@ -1,0 +1,19 @@
+:host {
+  display: inline-block;
+  width: 56px;
+  height: 48px;
+  position: relative;
+}
+
+.item-cycler {
+  width: 12px;
+  vertical-align: text-bottom; 
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 12px;
+}
+
+.item-cycler .mat-icon {
+  margin-left: -6px;
+}

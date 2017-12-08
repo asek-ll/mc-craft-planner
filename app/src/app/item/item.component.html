@@ -1,0 +1,11 @@
+<p *ngIf="item">
+  <app-item-icon [item]="item"></app-item-icon>
+  {{ item.displayName }} ( {{ item.name }} )
+  <a routerLink="/uses/{{item.sid}}">Uses</a>
+</p>
+
+<mat-list *ngIf="recipes">
+  <mat-list-item *ngFor="let recipe of recipes">
+    <app-recipe matLine [recipe]="recipe"></app-recipe>
+  </mat-list-item>
+</mat-list>

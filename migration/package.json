@@ -1,0 +1,17 @@
+{
+  "name": "migration",
+  "version": "1.0.0",
+  "description": "",
+  "main": "do.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.5.0",
+    "lodash": "^4.17.4",
+    "mongodb": "^2.2.33"
+  }
+}

@@ -1,0 +1,15 @@
+:host {
+  display: inline-block;
+  position: relative;
+}
+
+.stack-size {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  min-width: 20px;
+  text-align: center;
+  background: white;
+  color: black;
+  font-weight: bold;
+}

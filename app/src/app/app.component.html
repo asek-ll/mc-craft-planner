@@ -1,0 +1,14 @@
+<div>
+  <mat-toolbar color="primary">
+    <a (click)="goBack()" mat-button>Back</a>
+    <a routerLink="/items" mat-button>Crab</a>
+    <a routerLink="/recipes" mat-button>Recipes</a>
+    <a routerLink="/handlers" mat-button>Handlers</a>
+    <a routerLink="/plans" mat-button>Plans</a>
+    <a routerLink="/rules" mat-button>Rules</a>
+
+  </mat-toolbar>
+  <mat-card>
+    <router-outlet></router-outlet>
+  </mat-card>
+</div>

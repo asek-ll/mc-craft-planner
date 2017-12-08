@@ -1,0 +1,8 @@
+<app-positioned-item-stack [positionedItemStack]="recipe.result"></app-positioned-item-stack>
+
+<mat-icon class="recipe-arrow" [matTooltip]="recipe.handlerName">arrow_backward</mat-icon>
+
+<span class="ingredients" *ngIf="recipe.ingredients">
+  <app-positioned-item-stack [positionedItemStack]="ingredient" *ngFor="let ingredient of recipe.ingredients">
+  </app-positioned-item-stack>
+</span>
