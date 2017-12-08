@@ -39,16 +39,15 @@ export class RecipesService {
   }
 
   convertRecipe(json: RawRecipe, loader: BatchItemLoader): Recipe {
-    var recipe = new Recipe();
-    recipe.handlerName = json.handlerName;
+    const recipe = new Recipe();
 
-    var convertItemStack = function (rawPosStack: RawPositionedItemStack): PositionedItemStack {
+    const convertItemStack = function (rawPosStack: RawPositionedItemStack): PositionedItemStack {
 
       if (!rawPosStack) {
         return null;
       }
 
-      var result = new PositionedItemStack();
+      const result = new PositionedItemStack();
 
       result.x = rawPosStack.x;
       result.y = rawPosStack.y;
@@ -61,14 +60,14 @@ export class RecipesService {
       });
 
       return result;
-    }
+    };
 
-    var convertItemsStacks = function (rawPosStacks: RawPositionedItemStack[]) {
+    const convertItemsStacks = function (rawPosStacks: RawPositionedItemStack[]) {
       if (!rawPosStacks) {
         return [];
       }
       return rawPosStacks.map(stack => convertItemStack(stack));
-    }
+    };
 
     recipe.result = convertItemStack(json.result);
     recipe.ingredients = convertItemsStacks(json.ingredients);
@@ -78,14 +77,14 @@ export class RecipesService {
   }
 
   convertRecipes(rawRecipes: RawRecipe[]): Promise<Recipe[]> {
-    var loader = this.itemsService.getBatchLoader();
-    var recipes = rawRecipes.map(rawRecipe => this.convertRecipe(rawRecipe, loader))
+    const loader = this.itemsService.getBatchLoader();
+    const recipes = rawRecipes.map(rawRecipe => this.convertRecipe(rawRecipe, loader));
     return loader.process().then(() => recipes);
   }
 
   getRecipesForItemSid(sid: string): Promise<Recipe[]> {
     return this.rawRecipesService.find({
-      'result.items.sid': sid,
+      'result.sid': sid,
     }).then(rawRecipes => this.convertRecipes(rawRecipes));
   }
 
@@ -93,7 +92,7 @@ export class RecipesService {
     return this.rawRecipesService.find({
       'ingredients': {
         '$elemMatch': {
-          'items.sid': sid,
+          'sid': sid,
         }
       }
     }).then(rawRecipes => this.convertRecipes(rawRecipes));
