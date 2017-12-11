@@ -1,5 +1,5 @@
-import { StoredItem } from "../stored-item";
-import { Item } from "../items/item";
+import { StoredItem } from '../stored-item';
+import { Item } from '../items/item';
 
 export class ItemStack {
   constructor(
@@ -8,15 +8,7 @@ export class ItemStack {
   ) { }
 }
 
-export class PositionedItemStack {
-  x: number;
-  y: number;
-  items: ItemStack[];
-}
-
 export class Recipe extends StoredItem {
-  handlerName: string;
-  result: PositionedItemStack;
-  ingredients: PositionedItemStack[];
-  others: PositionedItemStack[];
+  result: ItemStack[];
+  ingredients: ItemStack[][];
 }

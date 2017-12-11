@@ -1,4 +1,4 @@
-<app-item-stack *ngIf="positionedItemStack.items.length > 0" [itemStack]="getActiveStack()"></app-item-stack>
-<button mat-icon-button *ngIf="positionedItemStack.items.length > 1" class="item-cycler" (click)="cycleStack()">
+<app-item-stack *ngIf="items.length > 0" [itemStack]="getActiveStack()"></app-item-stack>
+<button mat-icon-button *ngIf="items.length > 1" class="item-cycler" (click)="cycleStack()">
   <mat-icon>more_vert</mat-icon>  
 </button>

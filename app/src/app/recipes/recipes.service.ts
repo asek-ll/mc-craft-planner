@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Recipe, PositionedItemStack, ItemStack } from './recipe';
+import { Recipe, ItemStack } from './recipe';
 import { StoreHandler } from '../store-handler';
 import { DataRequester } from '../data-requester';
 import { Item } from '../items/item';
@@ -11,17 +11,9 @@ class RawItemStack {
   size: number;
 }
 
-class RawPositionedItemStack {
-  x: number;
-  y: number;
-  items: RawItemStack[];
-}
-
 class RawRecipe extends StoredItem {
-  handlerName: string;
-  result: RawPositionedItemStack;
-  ingredients: RawPositionedItemStack[];
-  others: RawPositionedItemStack[];
+  result: RawItemStack[];
+  ingredients: RawItemStack[][];
 }
 
 class RawRecipesService extends StoreHandler<RawRecipe> {
@@ -41,28 +33,24 @@ export class RecipesService {
   convertRecipe(json: RawRecipe, loader: BatchItemLoader): Recipe {
     const recipe = new Recipe();
 
-    const convertItemStack = function (rawPosStack: RawPositionedItemStack): PositionedItemStack {
+    const convertItemStack = function (items: RawItemStack[]): ItemStack[] {
 
-      if (!rawPosStack) {
+      if (!items) {
         return null;
       }
 
-      const result = new PositionedItemStack();
+      const result: ItemStack[] = [];
 
-      result.x = rawPosStack.x;
-      result.y = rawPosStack.y;
-      result.items = [];
-
-      rawPosStack.items.forEach(stack => {
+      items.forEach(stack => {
         loader.load(stack.sid).then(item => {
-          result.items.push(new ItemStack(item, stack.size));
+          result.push(new ItemStack(item, stack.size));
         });
       });
 
       return result;
     };
 
-    const convertItemsStacks = function (rawPosStacks: RawPositionedItemStack[]) {
+    const convertItemsStacks = function (rawPosStacks: RawItemStack[][]) {
       if (!rawPosStacks) {
         return [];
       }
@@ -71,7 +59,6 @@ export class RecipesService {
 
     recipe.result = convertItemStack(json.result);
     recipe.ingredients = convertItemsStacks(json.ingredients);
-    recipe.others = convertItemsStacks(json.others);
 
     return recipe;
   }
@@ -84,15 +71,22 @@ export class RecipesService {
 
   getRecipesForItemSid(sid: string): Promise<Recipe[]> {
     return this.rawRecipesService.find({
-      'result.sid': sid,
+      'result': {
+        '$elemMatch': {
+          'sid': sid,
+        }
+      }
     }).then(rawRecipes => this.convertRecipes(rawRecipes));
   }
 
   getRecipesWhereUsesItemSid(sid: string): Promise<Recipe[]> {
+
     return this.rawRecipesService.find({
       'ingredients': {
         '$elemMatch': {
-          'sid': sid,
+          '$elemMatch': {
+            'sid': sid,
+          }
         }
       }
     }).then(rawRecipes => this.convertRecipes(rawRecipes));
