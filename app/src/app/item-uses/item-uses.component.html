@@ -1,3 +1,13 @@
-<p>
-  item-uses works!
+<p *ngIf="item">
+  Uses of
+  <app-item-icon [item]="item"></app-item-icon>
+  {{ item.displayName }} ( {{ item.name }} )
 </p>
+
+<app-paged-list *ngIf="recipeService" [itemsService]="recipeService" [query]="query">
+  <ng-template let-item>
+    <mat-list-item>
+      <app-recipe matLine [recipe]="item"></app-recipe>
+    </mat-list-item>
+  </ng-template>
+</app-paged-list>

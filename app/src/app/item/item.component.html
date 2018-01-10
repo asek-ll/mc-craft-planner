@@ -4,8 +4,10 @@
   <a routerLink="/uses/{{item.sid}}">Uses</a>
 </p>
 
-<mat-list *ngIf="recipes">
-  <mat-list-item *ngFor="let recipe of recipes">
-    <app-recipe matLine [recipe]="recipe"></app-recipe>
-  </mat-list-item>
-</mat-list>
+<app-paged-list *ngIf="recipeService" [itemsService]="recipeService" [query]="query">
+  <ng-template let-item>
+    <mat-list-item>
+      <app-recipe matLine [recipe]="item"></app-recipe>
+    </mat-list-item>
+  </ng-template>
+</app-paged-list>

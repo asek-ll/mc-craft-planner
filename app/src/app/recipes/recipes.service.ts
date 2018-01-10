@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Recipe, ItemStack } from './recipe';
-import { StoreHandler } from '../store-handler';
+import { StoreHandler, SimpleStoreHandler } from '../store-handler';
 import { DataRequester } from '../data-requester';
 import { Item } from '../items/item';
 import { StoredItem } from '../stored-item';
@@ -16,18 +16,11 @@ class RawRecipe extends StoredItem {
   ingredients: RawItemStack[][];
 }
 
-class RawRecipesService extends StoreHandler<RawRecipe> {
-  constructor(private dataRequester: DataRequester) {
-    super(dataRequester, 'recipes', RawRecipe);
-  }
-}
-
 @Injectable()
-export class RecipesService {
-  rawRecipesService: RawRecipesService;
+export class RecipesService extends SimpleStoreHandler<Recipe, RawRecipe> {
 
   constructor(private dataRequester: DataRequester, private itemsService: ItemsService) {
-    this.rawRecipesService = new RawRecipesService(dataRequester);
+    super(dataRequester, 'recipes');
   }
 
   convertRecipe(json: RawRecipe, loader: BatchItemLoader): Recipe {
@@ -63,25 +56,29 @@ export class RecipesService {
     return recipe;
   }
 
-  convertRecipes(rawRecipes: RawRecipe[]): Promise<Recipe[]> {
+  protected convertOne(json: RawRecipe): Recipe {
+    return this.convertRecipe(json, this.itemsService.getBatchLoader());
+  }
+
+  convertMultiple(rawRecipes: RawRecipe[]): Promise<Recipe[]> {
     const loader = this.itemsService.getBatchLoader();
     const recipes = rawRecipes.map(rawRecipe => this.convertRecipe(rawRecipe, loader));
     return loader.process().then(() => recipes);
   }
 
   getRecipesForItemSid(sid: string): Promise<Recipe[]> {
-    return this.rawRecipesService.find({
+    return this.find({
       'result': {
         '$elemMatch': {
           'sid': sid,
         }
       }
-    }).then(rawRecipes => this.convertRecipes(rawRecipes));
+    });
   }
 
   getRecipesWhereUsesItemSid(sid: string): Promise<Recipe[]> {
 
-    return this.rawRecipesService.find({
+    return this.find({
       'ingredients': {
         '$elemMatch': {
           '$elemMatch': {
@@ -89,7 +86,7 @@ export class RecipesService {
           }
         }
       }
-    }).then(rawRecipes => this.convertRecipes(rawRecipes));
+    });
   }
 
 }

@@ -13,28 +13,36 @@ import { Recipe } from '../recipes/recipe';
 export class ItemComponent implements OnInit {
 
   item: Item;
-  recipes: Recipe[];
+
+  public query: object;
 
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     protected itemsService: ItemsService,
-    protected recipeService: RecipesService
+    public recipeService: RecipesService
   ) { }
 
   protected setItemBySid(sid: string) {
     this.itemsService.findOne({ sid }).then(item => {
       this.item = item;
     });
+  }
 
-    this.recipeService.getRecipesForItemSid(sid).then(recipes => {
-      this.recipes = recipes;
-    });
+  protected getQueryBySid(sid: string): object {
+    return {
+      'result': {
+        '$elemMatch': {
+          'sid': sid,
+        }
+      }
+    };
   }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.setItemBySid(params.sid);
+      this.query = this.getQueryBySid(params.sid);
     });
   }
 

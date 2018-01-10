@@ -1,36 +1,23 @@
 import { DataRequester } from './data-requester';
 import { StoredItem } from './stored-item';
+import { request } from 'https';
 
-export abstract class StoreHandler<T extends StoredItem> {
-
+export abstract class SimpleStoreHandler<T extends StoredItem, I> {
   constructor(
     private requester: DataRequester,
     public collectionName: string,
-    private itemClass: new() => T
   ) { }
 
-  protected createItem(json: object): T {
-
-    var item = new this.itemClass();
-
-    for (var propName in json) {
-      item[propName] = json[propName];
-    }
-
-    return item;
-  }
-
-  private createItems(jsons: object[]): T[] {
-    return jsons.map(json => this.createItem(json));
-  }
+  protected abstract convertOne(json: I): T;
+  protected abstract convertMultiple(jsons: I[]): Promise<T[]>;
 
   findOne(query: object): Promise<T> {
     return new Promise((resolve, reject) => {
       this.requester.requestData(this.collectionName + '-find-one', {
         query
-      }, (item: T) => {
+      }, (item: I) => {
         if (item) {
-          resolve(item)
+          resolve(this.convertOne(item));
         } else {
           reject();
         }
@@ -44,8 +31,8 @@ export abstract class StoreHandler<T extends StoredItem> {
         query,
         limit,
         skip,
-      }, (rawItems: object[]) => {
-        resolve(this.createItems(rawItems));
+      }, (rawItems: I[]) => {
+        resolve(this.convertMultiple(rawItems));
       });
     });
   }
@@ -65,8 +52,8 @@ export abstract class StoreHandler<T extends StoredItem> {
       this.requester.requestData(this.collectionName + '-insert', {
         data,
         options
-      }, (data: object) => {
-        resolve(this.createItem(data));
+      }, (resultData: I) => {
+        resolve(this.convertOne(resultData));
       });
     });
   }
@@ -79,8 +66,8 @@ export abstract class StoreHandler<T extends StoredItem> {
         },
         data,
         options,
-      }, (data: object) => {
-        resolve(this.createItem(data));
+      }, (resultData: I) => {
+        resolve(this.convertOne(resultData));
       });
     });
   }
@@ -98,4 +85,31 @@ export abstract class StoreHandler<T extends StoredItem> {
       });
     });
   }
+}
+
+export abstract class StoreHandler<T extends StoredItem> extends SimpleStoreHandler<T, JSON> {
+  constructor(
+    requester: DataRequester,
+    collectionName: string,
+    private itemClass: new () => T,
+  ) {
+    super(requester, collectionName);
+  }
+
+  protected convertOne(json: object): T {
+    const item = new this.itemClass();
+
+    for (const propName of Object.keys(json)) {
+      item[propName] = json[propName];
+    }
+
+    return item;
+  }
+
+  protected convertMultiple(jsons: object[]): Promise<T[]> {
+    return new Promise((resolve) => {
+      resolve(jsons.map(json => this.convertOne(json)));
+    });
+  }
+
 }

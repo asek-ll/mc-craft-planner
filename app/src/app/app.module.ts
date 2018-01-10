@@ -17,6 +17,7 @@ import { RecipeComponent } from './recipe/recipe.component';
 import { PositionedItemStackComponent } from './positioned-item-stack/positioned-item-stack.component';
 import { ItemIconComponent } from './item-icon/item-icon.component';
 import { ItemUsesComponent } from './item-uses/item-uses.component';
+import { PagedListComponent } from './paged-list/paged-list.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { ItemUsesComponent } from './item-uses/item-uses.component';
     RecipeComponent,
     PositionedItemStackComponent,
     ItemIconComponent,
-    ItemUsesComponent
+    ItemUsesComponent,
+    PagedListComponent
   ],
   imports: [
     BrowserModule,

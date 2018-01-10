@@ -25,7 +25,7 @@ export class BatchItemLoader {
   }
 
   process() {
-    var keys = Object.keys(this.sids);
+    const keys = Object.keys(this.sids);
     return this.itemsService.find({
       sid: {
         $in: keys
@@ -33,11 +33,11 @@ export class BatchItemLoader {
     }).then(values => {
 
       values.forEach(value => {
-        var callbacks = this.sids[value.sid];
+        const callbacks = this.sids[value.sid];
         if (callbacks) {
           callbacks.forEach(callback => callback(value));
         }
-      })
+      });
     });
   }
 
@@ -46,7 +46,7 @@ export class BatchItemLoader {
 @Injectable()
 export class ItemsService extends StoreHandler<Item> {
   constructor(private dataRequester: DataRequester) {
-    super(dataRequester, "items", Item);
+    super(dataRequester, 'items', Item);
   }
 
   getBatchLoader() {

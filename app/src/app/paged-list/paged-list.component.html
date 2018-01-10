@@ -1,0 +1,9 @@
+
+<ng-content></ng-content>
+  <mat-list>
+    <ng-template ngFor let-item [ngForOf]="items" [ngForTemplate]="itemTemplate">
+    </ng-template>
+  </mat-list>
+
+<mat-paginator [length]="itemsLength" [pageSize]="pageSize" [pageIndex]="pageIndex" [pageSizeOptions]="pageSizeOptions" (page)="onPaginatorEvent($event)">
+</mat-paginator>

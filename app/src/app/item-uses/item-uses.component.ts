@@ -6,10 +6,10 @@ import { RecipesService } from '../recipes/recipes.service';
 
 @Component({
   selector: 'app-item-uses',
-  templateUrl: '../item/item.component.html',
-  styleUrls: ['../item/item.component.css']
+  templateUrl: '../item-uses/item-uses.component.html',
+  styleUrls: ['../item-uses/item-uses.component.css']
 })
-export class ItemUsesComponent extends ItemComponent {
+export class ItemUsesComponent extends ItemComponent implements OnInit {
 
   constructor(
     router: Router,
@@ -20,14 +20,16 @@ export class ItemUsesComponent extends ItemComponent {
     super(router, route, itemsService, recipeService);
   }
 
-  protected setItemBySid(sid: string) {
-    this.itemsService.findOne({ sid }).then(item => {
-      this.item = item;
-    });
-
-    this.recipeService.getRecipesWhereUsesItemSid(sid).then(recipes => {
-      this.recipes = recipes;
-    });
+  protected getQueryBySid(sid: string): object {
+    return {
+      'ingredients': {
+        '$elemMatch': {
+          '$elemMatch': {
+            'sid': sid,
+          }
+        }
+      }
+    };
   }
 
 }
