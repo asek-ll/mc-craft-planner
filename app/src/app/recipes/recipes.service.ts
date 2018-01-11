@@ -26,6 +26,8 @@ export class RecipesService extends SimpleStoreHandler<Recipe, RawRecipe> {
   convertRecipe(json: RawRecipe, loader: BatchItemLoader): Recipe {
     const recipe = new Recipe();
 
+    recipe._id = json._id;
+
     const convertItemStack = function (items: RawItemStack[]): ItemStack[] {
 
       if (!items) {
@@ -56,8 +58,10 @@ export class RecipesService extends SimpleStoreHandler<Recipe, RawRecipe> {
     return recipe;
   }
 
-  protected convertOne(json: RawRecipe): Recipe {
-    return this.convertRecipe(json, this.itemsService.getBatchLoader());
+  protected convertOne(json: RawRecipe): Promise<Recipe> {
+    const loader = this.itemsService.getBatchLoader();
+    const recipe = this.convertRecipe(json, loader);
+    return loader.process().then(() => recipe);
   }
 
   convertMultiple(rawRecipes: RawRecipe[]): Promise<Recipe[]> {

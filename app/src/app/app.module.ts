@@ -18,6 +18,8 @@ import { PositionedItemStackComponent } from './positioned-item-stack/positioned
 import { ItemIconComponent } from './item-icon/item-icon.component';
 import { ItemUsesComponent } from './item-uses/item-uses.component';
 import { PagedListComponent } from './paged-list/paged-list.component';
+import { RecipesComponent } from './recipes/recipes.component';
+import { RecipeDetailComponent } from './recipe-detail/recipe-detail.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import { PagedListComponent } from './paged-list/paged-list.component';
     PositionedItemStackComponent,
     ItemIconComponent,
     ItemUsesComponent,
-    PagedListComponent
+    PagedListComponent,
+    RecipesComponent,
+    RecipeDetailComponent
   ],
   imports: [
     BrowserModule,
@@ -42,6 +46,12 @@ import { PagedListComponent } from './paged-list/paged-list.component';
     }, {
       path: 'uses/:sid',
       component: ItemUsesComponent,
+    }, {
+      path: 'recipes',
+      component: RecipesComponent
+    }, {
+      path: 'recipe/:id',
+      component: RecipeDetailComponent
     }, {
       path: '',
       redirectTo: '/items',

@@ -1,0 +1,24 @@
+<div *ngIf="recipe">
+
+  <p>Recipe</p>
+
+
+  <div>
+    Results:
+    <span *ngFor="let stack of recipe.result">
+      <app-item-stack [itemStack]="stack"></app-item-stack>
+    </span>
+  </div>
+
+  <div>
+    Ingredients:
+    <div *ngFor="let ingredient of recipe.ingredients">
+      <span *ngFor="let stack of ingredient">
+        <app-item-stack [itemStack]="stack"></app-item-stack>
+      </span>
+    </div>
+
+  </div>
+
+
+</div>

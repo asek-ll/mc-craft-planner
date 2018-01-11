@@ -8,7 +8,7 @@ export abstract class SimpleStoreHandler<T extends StoredItem, I> {
     public collectionName: string,
   ) { }
 
-  protected abstract convertOne(json: I): T;
+  protected abstract convertOne(json: I): Promise<T>;
   protected abstract convertMultiple(jsons: I[]): Promise<T[]>;
 
   findOne(query: object): Promise<T> {
@@ -96,7 +96,7 @@ export abstract class StoreHandler<T extends StoredItem> extends SimpleStoreHand
     super(requester, collectionName);
   }
 
-  protected convertOne(json: object): T {
+  protected simpleConvertOne(json: object): T {
     const item = new this.itemClass();
 
     for (const propName of Object.keys(json)) {
@@ -106,10 +106,12 @@ export abstract class StoreHandler<T extends StoredItem> extends SimpleStoreHand
     return item;
   }
 
+  protected convertOne(json: object): Promise<T> {
+    return Promise.resolve(this.simpleConvertOne(json));
+  }
+
   protected convertMultiple(jsons: object[]): Promise<T[]> {
-    return new Promise((resolve) => {
-      resolve(jsons.map(json => this.convertOne(json)));
-    });
+    return Promise.resolve(jsons.map(json => this.simpleConvertOne(json)));
   }
 
 }

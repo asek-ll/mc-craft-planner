@@ -17,6 +17,7 @@ export class PagedListComponent implements OnInit {
   @Input() itemsService: ItemService<object>;
   @Input() query: object;
   @Input() paramName = 'page';
+
   private baseUrl: string;
 
   @ContentChild(TemplateRef) itemTemplate: TemplateRef<any>;
