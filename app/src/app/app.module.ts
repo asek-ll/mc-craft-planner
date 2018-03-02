@@ -5,6 +5,8 @@ import { AppComponent } from './app.component';
 import { ItemsComponent } from './items/items.component';
 
 import { RouterModule } from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { ItemsService } from './items/items.service';
 import { DataRequester } from './data-requester';
 import { NgxElectronModule } from 'ngx-electron';
@@ -20,6 +22,8 @@ import { ItemUsesComponent } from './item-uses/item-uses.component';
 import { PagedListComponent } from './paged-list/paged-list.component';
 import { RecipesComponent } from './recipes/recipes.component';
 import { RecipeDetailComponent } from './recipe-detail/recipe-detail.component';
+import { InventoryComponent } from './inventory/inventory.component';
+import { ItemPickerComponent } from './item-picker/item-picker.component';
 
 @NgModule({
   declarations: [
@@ -33,10 +37,14 @@ import { RecipeDetailComponent } from './recipe-detail/recipe-detail.component';
     ItemUsesComponent,
     PagedListComponent,
     RecipesComponent,
-    RecipeDetailComponent
+    RecipeDetailComponent,
+    InventoryComponent,
+    ItemPickerComponent
   ],
   imports: [
     BrowserModule,
+    FormsModule,
+    ReactiveFormsModule,
     RouterModule.forRoot([{
       path: 'items',
       component: ItemsComponent,

@@ -1,0 +1,9 @@
+<mat-form-field>
+  <input type="text" matInput placeholder="Item name" [matAutocomplete]="auto" [formControl]="filterControl">
+  <mat-autocomplete #auto="matAutocomplete">
+    <mat-option *ngFor="let item of filteredItems" (onSelectionChange)="onItemSelected(item)"> 
+      <app-item-icon [item]="item" [title]="item.displayName"></app-item-icon>
+      {{ item.displayName }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>

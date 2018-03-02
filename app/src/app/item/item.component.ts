@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ItemsService } from '../items/items.service';
 import { Item } from '../items/item';
@@ -12,7 +12,7 @@ import { Recipe } from '../recipes/recipe';
 })
 export class ItemComponent implements OnInit {
 
-  item: Item;
+  @Input() item: Item;
 
   public query: object;
 

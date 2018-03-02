@@ -2,23 +2,25 @@
 
   <p>Recipe</p>
 
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Results</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <app-inventory [stacks]="recipe.result"></app-inventory>
+      </mat-card-content>
+    </mat-card>
 
-  <div>
-    Results:
-    <span *ngFor="let stack of recipe.result">
-      <app-item-stack [itemStack]="stack"></app-item-stack>
-    </span>
-  </div>
-
-  <div>
-    Ingredients:
-    <div *ngFor="let ingredient of recipe.ingredients">
-      <span *ngFor="let stack of ingredient">
-        <app-item-stack [itemStack]="stack"></app-item-stack>
-      </span>
-    </div>
-
-  </div>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Ingredients</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div *ngFor="let ingredient of recipe.ingredients">
+          <app-inventory [stacks]="ingredient"></app-inventory>
+        </div>
+      </mat-card-content>
+    </mat-card>
 
 
 </div>
