@@ -1,0 +1,22 @@
+<div *ngIf="plan">
+  <p>
+    plan works!
+  </p>
+  <mat-grid-list cols="2" rowHeight="200px">
+    <mat-grid-tile>
+      <app-inventory [stacks]="plan.goals"></app-inventory>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <app-inventory [stacks]="plan.inventory"></app-inventory>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="2">
+      Crafting steps
+    </mat-grid-tile>
+    <mat-grid-tile colspan="2">
+      Materials
+    </mat-grid-tile>
+    <mat-grid-tile colspan="2">
+      Graph
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>

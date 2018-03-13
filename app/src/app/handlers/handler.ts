@@ -1,4 +1,4 @@
-import { StoredItem } from './stored-item';
+import { StoredItem } from '../stored-item';
 
 export class Handler extends StoredItem {
 }

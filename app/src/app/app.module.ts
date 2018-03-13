@@ -24,6 +24,9 @@ import { RecipesComponent } from './recipes/recipes.component';
 import { RecipeDetailComponent } from './recipe-detail/recipe-detail.component';
 import { InventoryComponent } from './inventory/inventory.component';
 import { ItemPickerComponent } from './item-picker/item-picker.component';
+import { PlanComponent } from './plan/plan.component';
+import { PlanListComponent } from './plan-list/plan-list.component';
+import { PlansService } from './plan/plans.service';
 
 @NgModule({
   declarations: [
@@ -39,7 +42,9 @@ import { ItemPickerComponent } from './item-picker/item-picker.component';
     RecipesComponent,
     RecipeDetailComponent,
     InventoryComponent,
-    ItemPickerComponent
+    ItemPickerComponent,
+    PlanComponent,
+    PlanListComponent
   ],
   imports: [
     BrowserModule,
@@ -61,6 +66,12 @@ import { ItemPickerComponent } from './item-picker/item-picker.component';
       path: 'recipe/:id',
       component: RecipeDetailComponent
     }, {
+      path: 'plans',
+      component: PlanListComponent
+    }, {
+      path: 'plan/:id',
+      component: PlanComponent
+    }, {
       path: '',
       redirectTo: '/items',
       pathMatch: 'full'
@@ -77,6 +88,7 @@ import { ItemPickerComponent } from './item-picker/item-picker.component';
     ItemsService,
     RecipesService,
     DataRequester,
+    PlansService,
   ],
   bootstrap: [AppComponent],
 })
