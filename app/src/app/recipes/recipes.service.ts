@@ -12,7 +12,7 @@ class RawItemStack {
 }
 
 class RawRecipe extends StoredItem {
-  result: RawItemStack[];
+  result: RawItemStack[][];
   ingredients: RawItemStack[][];
 }
 
@@ -52,7 +52,7 @@ export class RecipesService extends SimpleStoreHandler<Recipe, RawRecipe> {
       return rawPosStacks.map(stack => convertItemStack(stack));
     };
 
-    recipe.result = convertItemStack(json.result);
+    recipe.result = convertItemsStacks(json.result);
     recipe.ingredients = convertItemsStacks(json.ingredients);
 
     return recipe;
@@ -74,7 +74,9 @@ export class RecipesService extends SimpleStoreHandler<Recipe, RawRecipe> {
     return this.find({
       'result': {
         '$elemMatch': {
-          'sid': sid,
+          '$elemMatch': {
+            'sid': sid,
+          }
         }
       }
     });

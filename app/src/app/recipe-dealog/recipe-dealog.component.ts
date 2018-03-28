@@ -15,8 +15,8 @@ export class RecipeDealogComponent implements OnInit {
   public recipes: Recipe[] = [];
 
   constructor(public dialogRef: MatDialogRef<RecipeDealogComponent>,
-  @Inject(MAT_DIALOG_DATA) public data: Item,
-  public recipesService: RecipesService) {
+    @Inject(MAT_DIALOG_DATA) public data: Item,
+    public recipesService: RecipesService) {
 
   }
 
@@ -28,7 +28,12 @@ export class RecipeDealogComponent implements OnInit {
 
   select(recipe: Recipe) {
     const planRecipe = new PlanRecipe();
-    planRecipe.result = recipe.result[0];
+    planRecipe.result = [];
+
+    recipe.result.forEach(result => {
+      planRecipe.result.push(result[0]);
+    });
+
     planRecipe.ingredients = [];
 
     recipe.ingredients.forEach(ingredients => {

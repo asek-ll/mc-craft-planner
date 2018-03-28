@@ -10,7 +10,7 @@ export class Plan extends StoredItem {
 }
 
 export class PlanRecipe {
-  result: ItemStack;
+  result: ItemStack[];
   ingredients: ItemStack[];
 }
 

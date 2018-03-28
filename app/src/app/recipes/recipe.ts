@@ -9,6 +9,6 @@ export class ItemStack {
 }
 
 export class Recipe extends StoredItem {
-  result: ItemStack[];
+  result: ItemStack[][];
   ingredients: ItemStack[][];
 }

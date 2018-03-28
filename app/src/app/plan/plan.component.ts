@@ -50,8 +50,9 @@ export class PlanComponent implements OnInit {
         addItems(ingredient, - step.count);
       });
 
-      const result = step.recipe.result;
-      addItems(result, step.count);
+      step.recipe.result.forEach(ingredient => {
+        addItems(ingredient, step.count);
+      });
     });
 
     const required: ItemStack[] = [];
@@ -70,6 +71,12 @@ export class PlanComponent implements OnInit {
     this.results = results;
   }
 
+  public removeStep(step: CraftingStep) {
+    const index = this.plan.craftingSteps.indexOf(step);
+    this.plan.craftingSteps.splice(index, 1);
+    this.recalcPlan();
+  }
+
   public expandStack(ingredient: ItemStack) {
     this.dialog.open(RecipeDealogComponent, {
       height: '600px',
@@ -81,7 +88,15 @@ export class PlanComponent implements OnInit {
       }
       const step = new CraftingStep();
       step.recipe = result as PlanRecipe;
-      step.count = Math.ceil(ingredient.size / step.recipe.result.size);
+      step.count = 1;
+
+      step.recipe.result.forEach(res => {
+        if (res.item.sid === ingredient.item.sid) {
+          step.count = Math.ceil(ingredient.size / res.size);
+        }
+      });
+
+
       this.plan.craftingSteps.push(step);
       this.recalcPlan();
     });

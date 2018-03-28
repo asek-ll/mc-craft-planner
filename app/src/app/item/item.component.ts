@@ -33,7 +33,9 @@ export class ItemComponent implements OnInit {
     return {
       'result': {
         '$elemMatch': {
-          'sid': sid,
+          '$elemMatch': {
+            'sid': sid,
+          }
         }
       }
     };
