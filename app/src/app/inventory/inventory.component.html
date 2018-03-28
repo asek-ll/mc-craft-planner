@@ -1,7 +1,7 @@
 <mat-list>
   <mat-list-item *ngFor="let stack of stacks">
     <mat-form-field class="item-count">
-      <input matInput [(ngModel)]="stack.size" type="number">
+      <input matInput [(ngModel)]="stack.size" type="number" (input)="onStackSizeUpdate($event)">
     </mat-form-field>
     <app-item-icon [item]="stack.item" [title]="stack.item.displayName"></app-item-icon>
     <button mat-icon-button (click)="removeStack(stack)">

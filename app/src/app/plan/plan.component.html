@@ -1,22 +1,36 @@
 <div *ngIf="plan">
-  <p>
-    plan works!
-  </p>
-  <mat-grid-list cols="2" rowHeight="200px">
-    <mat-grid-tile>
-      <app-inventory [stacks]="plan.goals"></app-inventory>
-    </mat-grid-tile>
-    <mat-grid-tile>
-      <app-inventory [stacks]="plan.inventory"></app-inventory>
-    </mat-grid-tile>
-    <mat-grid-tile colspan="2">
-      Crafting steps
-    </mat-grid-tile>
-    <mat-grid-tile colspan="2">
-      Materials
-    </mat-grid-tile>
-    <mat-grid-tile colspan="2">
-      Graph
-    </mat-grid-tile>
-  </mat-grid-list>
+  <div class="invetory-wrapper">
+    <app-inventory [(stacks)]="plan.goals" (onItemsChanges)="recalcPlan()"></app-inventory>
+    <app-inventory [(stacks)]="plan.inventory" (onItemsChanges)="recalcPlan()"></app-inventory>
+  </div>
+  Crafting steps
+
+  <mat-list class="crafting-steps">
+    <mat-list-item *ngFor="let step of plan.craftingSteps">
+      {{ step.count }}
+      <app-item-stack [itemStack]="step.recipe.result"></app-item-stack>
+
+      <mat-icon class="recipe-arrow" >arrow_backward</mat-icon>
+
+      <span class="ingredients" *ngIf="step.recipe.ingredients">
+        <app-item-stack [itemStack]="ingredient" *ngFor="let ingredient of step.recipe.ingredients">
+        </app-item-stack>
+      </span>
+
+    </mat-list-item>
+  </mat-list>
+
+  Materials
+
+  <mat-list class="required-ingredients">
+    <mat-list-item *ngFor="let ingredient of requiredItems">
+    <app-item-stack [itemStack]="ingredient">
+    </app-item-stack>
+      <button mat-button (click)="expandStack(ingredient)">
+        EXPAND
+      </button>
+    </mat-list-item>
+  </mat-list>
+
+  Graph
 </div>

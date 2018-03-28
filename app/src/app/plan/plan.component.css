@@ -1,0 +1,9 @@
+.invetory-wrapper {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.invetory-wrapper app-inventory {
+  display: table-cell;
+}

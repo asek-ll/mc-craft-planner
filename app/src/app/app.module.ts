@@ -27,6 +27,7 @@ import { ItemPickerComponent } from './item-picker/item-picker.component';
 import { PlanComponent } from './plan/plan.component';
 import { PlanListComponent } from './plan-list/plan-list.component';
 import { PlansService } from './plan/plans.service';
+import { RecipeDealogComponent } from './recipe-dealog/recipe-dealog.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { PlansService } from './plan/plans.service';
     InventoryComponent,
     ItemPickerComponent,
     PlanComponent,
-    PlanListComponent
+    PlanListComponent,
+    RecipeDealogComponent
   ],
   imports: [
     BrowserModule,
@@ -84,6 +86,7 @@ import { PlansService } from './plan/plans.service';
     MaterialModule,
     BrowserAnimationsModule,
   ],
+  entryComponents: [RecipeDealogComponent],
   providers: [
     ItemsService,
     RecipesService,

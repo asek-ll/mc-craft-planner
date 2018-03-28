@@ -1,0 +1,8 @@
+<mat-list>
+  <mat-list-item *ngFor="let recipe of recipes">
+    <app-recipe matLine [recipe]="recipe"></app-recipe>
+    <button mat-button (click)="select(recipe)">
+      SELECT
+    </button>
+  </mat-list-item>
+</mat-list>

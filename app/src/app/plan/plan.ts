@@ -1,5 +1,5 @@
 import { StoredItem } from '../stored-item';
-import { ItemStack, Recipe } from '../recipes/recipe';
+import { ItemStack } from '../recipes/recipe';
 import { Item } from '../items/item';
 
 export class Plan extends StoredItem {
@@ -9,8 +9,12 @@ export class Plan extends StoredItem {
   craftingSteps: CraftingStep[];
 }
 
+export class PlanRecipe {
+  result: ItemStack;
+  ingredients: ItemStack[];
+}
+
 export class CraftingStep {
-  result: Item;
-  recipe: Recipe;
+  recipe: PlanRecipe;
   count: number;
 }

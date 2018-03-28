@@ -5,3 +5,8 @@
 .item-count input {
   text-align: right;
 }
+
+app-item-picker {
+  display: block;
+  width: 100%;
+}
