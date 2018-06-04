@@ -29,7 +29,7 @@ export class ItemPickerComponent implements OnInit {
     if (this.loadTimerId) {
       clearTimeout(this.loadTimerId);
     }
-    this.loadTimerId = setTimeout( () => this.load(text), 200 as any);
+    this.loadTimerId = setTimeout( () => this.load(text), 100 as any);
   }
 
   load(text: string) {

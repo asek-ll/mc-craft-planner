@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RecipeDealogComponent } from './recipe-dealog.component';
+import { RecipeDealogComponent } from './recipe-dialog.component';
 
 describe('RecipeDealogComponent', () => {
   let component: RecipeDealogComponent;

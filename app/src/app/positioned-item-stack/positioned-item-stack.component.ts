@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ItemStack } from '../recipes/recipe';
+import { ItemStack, ConfigurableItemStack } from '../recipes/recipe';
 
 @Component({
   selector: 'app-positioned-item-stack',
@@ -8,27 +8,19 @@ import { ItemStack } from '../recipes/recipe';
 })
 export class PositionedItemStackComponent implements OnInit {
 
-  @Input() items: ItemStack[];
-
-  public activeIndex = 0;
+  @Input() item: ConfigurableItemStack;
 
   constructor() { }
 
   ngOnInit() {
   }
 
-  public getActiveStack() {
-    return this.items[this.activeIndex];
+  public getActiveStack(): ItemStack {
+    return this.item.getActive();
   }
 
   public cycleStack() {
-    let nextIndex = this.activeIndex + 1;
-
-    if (nextIndex >= this.items.length) {
-      nextIndex = 0;
-    }
-
-    this.activeIndex = nextIndex;
+    this.item.next();
   }
 
 }

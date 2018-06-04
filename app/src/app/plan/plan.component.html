@@ -7,22 +7,26 @@
 
   <mat-list class="crafting-steps">
     <mat-list-item *ngFor="let step of plan.craftingSteps">
-      {{ step.count }}
-      <span class="results" *ngIf="step.recipe.result">
-        <app-item-stack [itemStack]="result" *ngFor="let result of step.recipe.result">
-        </app-item-stack>
-      </span>
+      <div class="crafting-step">
+        <span class="step-count">
+          {{ step.count }}
+        </span>
+        <span class="results" *ngIf="step.recipe.result">
+          <app-item-stack [itemStack]="result" *ngFor="let result of step.recipe.result">
+          </app-item-stack>
+        </span>
 
-      <mat-icon class="recipe-arrow" >arrow_backward</mat-icon>
+        <mat-icon class="recipe-arrow" >arrow_backward</mat-icon>
 
-      <span class="ingredients" *ngIf="step.recipe.ingredients">
-        <app-item-stack [itemStack]="ingredient" *ngFor="let ingredient of step.recipe.ingredients">
-        </app-item-stack>
-      </span>
+        <span class="ingredients" *ngIf="step.recipe.ingredients">
+          <app-item-stack [itemStack]="ingredient" *ngFor="let ingredient of step.recipe.ingredients">
+          </app-item-stack>
+        </span>
 
-      <button mat-button (click)="removeStep(step)">
-        REMOVE
-      </button>
+        <button mat-button (click)="removeStep(step)">
+          REMOVE
+        </button>
+      </div>
 
     </mat-list-item>
   </mat-list>

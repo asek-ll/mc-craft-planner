@@ -1,13 +1,13 @@
-<span class="results" *ngIf="recipe.result">
-  <app-positioned-item-stack [items]="result" *ngFor="let result of recipe.result">
+<span class="results" *ngIf="configurableRecipe.result">
+  <app-positioned-item-stack [item]="result" *ngFor="let result of configurableRecipe.result">
   </app-positioned-item-stack>
 </span>
 
-<a routerLink="/recipe/{{recipe._id}}">
-  <mat-icon class="recipe-arrow" [matTooltip]="recipe.handlerName">arrow_backward</mat-icon>
+<a routerLink="/recipe/{{configurableRecipe.recipe._id}}">
+  <mat-icon class="recipe-arrow">arrow_backward</mat-icon>
 </a>
 
-<span class="ingredients" *ngIf="recipe.ingredients">
-  <app-positioned-item-stack [items]="ingredient" *ngFor="let ingredient of recipe.ingredients">
+<span class="ingredients" *ngIf="configurableRecipe.ingredients">
+  <app-positioned-item-stack [item]="ingredient" *ngFor="let ingredient of configurableRecipe.ingredients">
   </app-positioned-item-stack>
 </span>

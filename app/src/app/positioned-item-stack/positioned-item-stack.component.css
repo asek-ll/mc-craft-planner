@@ -1,7 +1,7 @@
 :host {
   display: inline-block;
-  width: 56px;
-  height: 48px;
+  width: 44px;
+  height: 32px;
   position: relative;
 }
 
@@ -11,7 +11,6 @@
   overflow: hidden;
   position: absolute;
   right: 0;
-  top: 12px;
 }
 
 .item-cycler .mat-icon {

@@ -3,7 +3,7 @@ import { Plan, PlanRecipe, CraftingStep } from './plan';
 import { ItemStack, Recipe } from '../recipes/recipe';
 import { iterateListLike } from '@angular/core/src/change_detection/change_detection_util';
 import { Item } from '../items/item';
-import { RecipeDealogComponent } from '../recipe-dealog/recipe-dealog.component';
+import { RecipeDialogComponent } from '../recipe-dialog/recipe-dialog.component';
 import { MatDialog } from '@angular/material';
 
 @Component({
@@ -46,12 +46,26 @@ export class PlanComponent implements OnInit {
     });
 
     this.plan.craftingSteps.forEach(step => {
+
+      let count = 0;
+
+      if (step.recipe.result.length > 0) {
+        const stack = step.recipe.result[0];
+        const requiredCount = itemsCount.get(stack.item.sid) || 0;
+
+        if (requiredCount < 0) {
+          count = Math.ceil(-requiredCount / stack.size);
+        }
+      }
+
+      step.count = count;
+
       step.recipe.ingredients.forEach(ingredient => {
-        addItems(ingredient, - step.count);
+        addItems(ingredient, - count);
       });
 
       step.recipe.result.forEach(ingredient => {
-        addItems(ingredient, step.count);
+        addItems(ingredient, count);
       });
     });
 
@@ -78,7 +92,7 @@ export class PlanComponent implements OnInit {
   }
 
   public expandStack(ingredient: ItemStack) {
-    this.dialog.open(RecipeDealogComponent, {
+    this.dialog.open(RecipeDialogComponent, {
       height: '600px',
       width: '800px',
       data: ingredient.item

@@ -1,0 +1,7 @@
+.recipe-components {
+  display: flex;
+}
+
+.recipe-components > div {
+  flex: 1;
+}

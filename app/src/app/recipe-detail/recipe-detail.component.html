@@ -1,26 +1,42 @@
 <div *ngIf="recipe">
 
-  <p>Recipe</p>
+  <div class="recipe-components">
+    <div class="result-items">
+      <mat-toolbar color="primary">
+        Results
+      </mat-toolbar>
+      <div *ngFor="let result of recipe.result">
+        <app-inventory [stacks]="result"></app-inventory>
+      </div>
+    </div>
+    <div class="igredient-items">
+      <mat-toolbar color="primary">
+        Ingredients
+      </mat-toolbar>
+      <div *ngFor="let ingredient of recipe.ingredients">
+        <app-inventory [stacks]="ingredient"></app-inventory>
+      </div>
+    </div>
+  </div>
 
-    <mat-card>
+    <!-- <mat-card>
       <mat-card-header>
-        <mat-card-title>Results</mat-card-title>
+        <mat-card-title>
+          <h3>Results:</h3>
+        </mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <app-inventory [stacks]="recipe.result"></app-inventory>
       </mat-card-content>
     </mat-card>
 
     <mat-card>
       <mat-card-header>
-        <mat-card-title>Ingredients</mat-card-title>
+        <mat-card-title>
+          <h3>Ingredients:</h3>
+        </mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <div *ngFor="let ingredient of recipe.ingredients">
-          <app-inventory [stacks]="ingredient"></app-inventory>
-        </div>
       </mat-card-content>
-    </mat-card>
-
+    </mat-card> -->
 
 </div>

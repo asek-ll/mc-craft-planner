@@ -1,5 +1,5 @@
-<mat-list>
-  <mat-list-item *ngFor="let stack of stacks">
+<mat-list class="inventory-items">
+  <mat-list-item *ngFor="let stack of stacks" class="inventory-item">
     <mat-form-field class="item-count">
       <input matInput [(ngModel)]="stack.size" type="number" (input)="onStackSizeUpdate($event)">
     </mat-form-field>
