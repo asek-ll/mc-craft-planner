@@ -5,6 +5,8 @@ import { iterateListLike } from '@angular/core/src/change_detection/change_detec
 import { Item } from '../items/item';
 import { RecipeDialogComponent } from '../recipe-dialog/recipe-dialog.component';
 import { MatDialog } from '@angular/material';
+import { ActivatedRoute } from '@angular/router';
+import { PlansService } from './plans.service';
 
 @Component({
   selector: 'app-plan',
@@ -17,14 +19,30 @@ export class PlanComponent implements OnInit {
   public requiredItems: ItemStack[] = [];
   public results: ItemStack[] = [];
 
-  constructor(public dialog: MatDialog) {
-    this.plan = new Plan();
-    this.plan.goals = [];
-    this.plan.inventory = [];
-    this.plan.craftingSteps = [];
+  constructor(
+    public dialog: MatDialog,
+    protected route: ActivatedRoute,
+    private planService: PlansService
+  ) {
   }
 
   ngOnInit() {
+    this.route.params.subscribe(params => {
+      if (params.id) {
+        this.planService.findOne({
+          _id: params.id
+        }).then(plan => {
+          this.plan = plan;
+          this.recalcPlan();
+        });
+      } else {
+        this.plan = new Plan();
+        this.plan.title = 'Custom plan';
+        this.plan.goals = [];
+        this.plan.inventory = [];
+        this.plan.craftingSteps = [];
+      }
+    });
   }
 
   public recalcPlan(): void {
@@ -116,4 +134,14 @@ export class PlanComponent implements OnInit {
     });
   }
 
+  private updateOrCreatePlan(plan: Plan): Promise<Plan> {
+    if (plan._id) {
+      return this.planService.updateItem(plan);
+    }
+    return this.planService.insertItem(plan);
+  }
+
+  public savePlan(plan: Plan) {
+    this.updateOrCreatePlan(plan);
+  }
 }

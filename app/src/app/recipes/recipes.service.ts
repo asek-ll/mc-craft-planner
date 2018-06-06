@@ -6,54 +6,55 @@ import { Item } from '../items/item';
 import { StoredItem } from '../stored-item';
 import { ItemsService, BatchItemLoader } from '../items/items.service';
 
-class RawItemStack {
+export class RawItemStack {
   sid: string;
   size: number;
 }
 
-class RawRecipe extends StoredItem {
+export class RawRecipe extends StoredItem {
+  handlerName: string;
   result: RawItemStack[][];
   ingredients: RawItemStack[][];
 }
 
 @Injectable()
 export class RecipesService extends SimpleStoreHandler<Recipe, RawRecipe> {
-
   constructor(private dataRequester: DataRequester, private itemsService: ItemsService) {
     super(dataRequester, 'recipes');
   }
 
-  convertRecipe(json: RawRecipe, loader: BatchItemLoader): Recipe {
+  public convertItemStack(items: RawItemStack[], loader: BatchItemLoader): ItemStack[] {
+
+    if (!items) {
+      return null;
+    }
+
+    const result: ItemStack[] = [];
+
+    items.forEach((stack, i) => {
+      loader.load(stack.sid).then(item => {
+        result[i] = new ItemStack(item, stack.size);
+      });
+    });
+
+    return result;
+  }
+
+  public convertRecipe(json: RawRecipe, loader: BatchItemLoader): Recipe {
     const recipe = new Recipe();
 
     recipe._id = json._id;
 
-    const convertItemStack = function (items: RawItemStack[]): ItemStack[] {
-
-      if (!items) {
-        return null;
-      }
-
-      const result: ItemStack[] = [];
-
-      items.forEach(stack => {
-        loader.load(stack.sid).then(item => {
-          result.push(new ItemStack(item, stack.size));
-        });
-      });
-
-      return result;
-    };
-
-    const convertItemsStacks = function (rawPosStacks: RawItemStack[][]) {
+    const convertItemsStacks = (rawPosStacks: RawItemStack[][]) => {
       if (!rawPosStacks) {
         return [];
       }
-      return rawPosStacks.map(stack => convertItemStack(stack));
+      return rawPosStacks.map(stack => this.convertItemStack(stack, loader));
     };
 
     recipe.result = convertItemsStacks(json.result);
     recipe.ingredients = convertItemsStacks(json.ingredients);
+    recipe.handlerName = json.handlerName;
 
     return recipe;
   }
@@ -93,6 +94,28 @@ export class RecipesService extends SimpleStoreHandler<Recipe, RawRecipe> {
         }
       }
     });
+  }
+
+  private ingredientsToRaw(ingredients: ItemStack[][]): RawItemStack[][] {
+    return ingredients.map(stacks => {
+      return stacks.map( stack => {
+        const rawStack = new RawItemStack();
+        rawStack.sid = stack.item.sid;
+        rawStack.size = stack.size;
+        return rawStack;
+      });
+    });
+  }
+
+  protected toRaw(recipe: Recipe): RawRecipe {
+    const rawRecipe = new RawRecipe();
+    rawRecipe._id = recipe._id;
+    rawRecipe.handlerName = recipe.handlerName;
+
+    rawRecipe.ingredients = this.ingredientsToRaw(recipe.ingredients);
+    rawRecipe.result = this.ingredientsToRaw(recipe.result);
+
+    return rawRecipe;
   }
 
 }

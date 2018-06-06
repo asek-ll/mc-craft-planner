@@ -11,6 +11,8 @@ export abstract class SimpleStoreHandler<T extends StoredItem, I> {
   protected abstract convertOne(json: I): Promise<T>;
   protected abstract convertMultiple(jsons: I[]): Promise<T[]>;
 
+  protected abstract toRaw(item: T): I;
+
   findOne(query: object): Promise<T> {
     return new Promise((resolve, reject) => {
       this.requester.requestData(this.collectionName + '-find-one', {
@@ -26,12 +28,15 @@ export abstract class SimpleStoreHandler<T extends StoredItem, I> {
   }
 
   find(query: object, limit?: number, skip?: number): Promise<T[]> {
+    // console.time('storeQuery');
     return new Promise((resolve, reject) => {
       this.requester.requestData(this.collectionName + '-find', {
         query,
         limit,
         skip,
       }, (rawItems: I[]) => {
+        // console.timeEnd('storeQuery');
+        console.log(query);
         resolve(this.convertMultiple(rawItems));
       });
     });
@@ -47,7 +52,8 @@ export abstract class SimpleStoreHandler<T extends StoredItem, I> {
     });
   }
 
-  insertItem(data: T, options: object = {}): Promise<T> {
+  insertItem(item: T, options: object = {}): Promise<T> {
+    const data = this.toRaw(item);
     return new Promise((resolve, reject) => {
       this.requester.requestData(this.collectionName + '-insert', {
         data,
@@ -58,16 +64,17 @@ export abstract class SimpleStoreHandler<T extends StoredItem, I> {
     });
   }
 
-  updateItem(data: T, options: object = {}): Promise<T> {
+  updateItem(item: T, options: object = {}): Promise<T> {
+    const data = this.toRaw(item);
     return new Promise((resolve, reject) => {
       this.requester.requestData(this.collectionName + '-update', {
         query: {
-          _id: data._id,
+          _id: item._id,
         },
         data,
         options,
       }, (resultData: I) => {
-        resolve(this.convertOne(resultData));
+        resolve(item);
       });
     });
   }
@@ -87,7 +94,7 @@ export abstract class SimpleStoreHandler<T extends StoredItem, I> {
   }
 }
 
-export abstract class StoreHandler<T extends StoredItem> extends SimpleStoreHandler<T, JSON> {
+export abstract class StoreHandler<T extends StoredItem> extends SimpleStoreHandler<T, object> {
   constructor(
     requester: DataRequester,
     collectionName: string,
@@ -112,6 +119,10 @@ export abstract class StoreHandler<T extends StoredItem> extends SimpleStoreHand
 
   protected convertMultiple(jsons: object[]): Promise<T[]> {
     return Promise.resolve(jsons.map(json => this.simpleConvertOne(json)));
+  }
+
+  protected toRaw(item: T): object {
+    return item;
   }
 
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PlansService } from '../plan/plans.service';
+import { Plan } from '../plan/plan';
 
 @Component({
   selector: 'app-plan-list',
@@ -8,11 +9,17 @@ import { PlansService } from '../plan/plans.service';
 })
 export class PlanListComponent implements OnInit {
 
+  public plans: Plan[];
+  public query = {};
+
   constructor(
-    private planService: PlansService
+    public planService: PlansService
   ) { }
 
   ngOnInit() {
+    this.planService.find({}).then(plans => {
+      this.plans = plans;
+    });
   }
 
 }

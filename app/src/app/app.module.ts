@@ -74,6 +74,9 @@ import { RecipeDialogComponent } from './recipe-dialog/recipe-dialog.component';
       path: 'plan/:id',
       component: PlanComponent
     }, {
+      path: 'plan-new',
+      component: PlanComponent
+    }, {
       path: '',
       redirectTo: '/items',
       pathMatch: 'full'

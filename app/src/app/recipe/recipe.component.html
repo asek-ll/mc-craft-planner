@@ -4,7 +4,7 @@
 </span>
 
 <a routerLink="/recipe/{{configurableRecipe.recipe._id}}">
-  <mat-icon class="recipe-arrow">arrow_backward</mat-icon>
+  <mat-icon class="recipe-arrow" title="{{configurableRecipe.recipe.handlerName}}">arrow_backward</mat-icon>
 </a>
 
 <span class="ingredients" *ngIf="configurableRecipe.ingredients">

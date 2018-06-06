@@ -2,4 +2,12 @@
   plan-list works!
 </p>
 
-<a mat-button routerLink="/plan/2">New Plan</a>
+<a mat-button routerLink="/plan-new">New Plan</a>
+
+<app-paged-list *ngIf="planService" [itemsService]="planService" [query]="query">
+  <ng-template let-item>
+    <mat-list-item>
+      <a routerLink="/plan/{{item._id}}">{{ item.title }}</a>
+    </mat-list-item>
+  </ng-template>
+</app-paged-list>

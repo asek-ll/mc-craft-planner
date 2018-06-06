@@ -81,12 +81,12 @@ module.exports = function () {
       // inMemoryOnly: dbName === 'items',
     });
 
-    // if (dbName === 'items') {
-    //   db.ensureIndex({
-    //     fieldName: 'sid',
+    if (dbName === 'items') {
+      db.ensureIndex({
+        fieldName: 'sid',
     //     unique: true,
-    //   });
-    // }
+      });
+    }
 
     registerHandler(dbName + '-find', (data, callback) => {
       logger.debug('trigger', dbName + '-find', data);

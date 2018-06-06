@@ -34,13 +34,33 @@ export class RecipeDialogComponent implements OnInit {
       planRecipe.result.push(result.getActive());
     });
 
-    planRecipe.ingredients = [];
+    const planIngredients = [];
 
     recipe.ingredients.forEach(ingredients => {
-      planRecipe.ingredients.push(ingredients.getActive());
+      planIngredients.push(ingredients.getActive());
     });
 
+    planRecipe.ingredients = this.compactIngredients(planIngredients);
+
+
     this.dialogRef.close(planRecipe);
+  }
+
+  private compactIngredients(stacks: ItemStack[]): ItemStack[] {
+    const sidMap: Map<string, ItemStack> = new Map();
+
+    stacks.reduce((map, stack) => {
+      const item = stack.item;
+      const stored = map.get(item.sid);
+      const newValue = stored ? new ItemStack(item, stored.size + stack.size) : stack;
+
+      map.set(item.sid, newValue);
+
+      return map;
+    }, sidMap);
+
+
+    return Array.from(sidMap.values());
   }
 
 }

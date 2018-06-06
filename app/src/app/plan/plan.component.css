@@ -7,3 +7,24 @@
 .invetory-wrapper app-inventory {
   display: table-cell;
 }
+
+.step-count {
+  font-size: 24px;
+  width: 48px;
+  display: inline-block;
+  text-align: right;
+  padding-right: 10px;
+}
+
+.ingredients app-item-stack {
+  margin-right: 4px;
+}
+
+.ingredient-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.ingredient-list mat-list-item {
+  width: 33%;
+}
