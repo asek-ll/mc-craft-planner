@@ -1,15 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Recipe, ItemStack } from './recipe';
+import { Recipe, ItemStack, RawItemStack } from './recipe';
 import { StoreHandler, SimpleStoreHandler } from '../store-handler';
 import { DataRequester } from '../data-requester';
 import { Item } from '../items/item';
 import { StoredItem } from '../stored-item';
 import { ItemsService, BatchItemLoader } from '../items/items.service';
-
-export class RawItemStack {
-  sid: string;
-  size: number;
-}
+import { ItemStackUtils } from '../convertion-utils';
 
 export class RawRecipe extends StoredItem {
   handlerName: string;
@@ -23,23 +19,6 @@ export class RecipesService extends SimpleStoreHandler<Recipe, RawRecipe> {
     super(dataRequester, 'recipes');
   }
 
-  public convertItemStack(items: RawItemStack[], loader: BatchItemLoader): ItemStack[] {
-
-    if (!items) {
-      return null;
-    }
-
-    const result: ItemStack[] = [];
-
-    items.forEach((stack, i) => {
-      loader.load(stack.sid).then(item => {
-        result[i] = new ItemStack(item, stack.size);
-      });
-    });
-
-    return result;
-  }
-
   public convertRecipe(json: RawRecipe, loader: BatchItemLoader): Recipe {
     const recipe = new Recipe();
 
@@ -49,7 +28,7 @@ export class RecipesService extends SimpleStoreHandler<Recipe, RawRecipe> {
       if (!rawPosStacks) {
         return [];
       }
-      return rawPosStacks.map(stack => this.convertItemStack(stack, loader));
+      return rawPosStacks.map(stack => ItemStackUtils.toItemStacks(stack, loader));
     };
 
     recipe.result = convertItemsStacks(json.result);
@@ -97,14 +76,7 @@ export class RecipesService extends SimpleStoreHandler<Recipe, RawRecipe> {
   }
 
   private ingredientsToRaw(ingredients: ItemStack[][]): RawItemStack[][] {
-    return ingredients.map(stacks => {
-      return stacks.map( stack => {
-        const rawStack = new RawItemStack();
-        rawStack.sid = stack.item.sid;
-        rawStack.size = stack.size;
-        return rawStack;
-      });
-    });
+    return ingredients.map(stacks => ItemStackUtils.toRawStacks(stacks));
   }
 
   protected toRaw(recipe: Recipe): RawRecipe {

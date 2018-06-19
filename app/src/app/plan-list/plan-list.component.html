@@ -1,13 +1,19 @@
-<p>
-  plan-list works!
-</p>
-
-<a mat-button routerLink="/plan-new">New Plan</a>
+<button mat-raised-button routerLink="/plan-new" color="primary">New Plan</button>
 
 <app-paged-list *ngIf="planService" [itemsService]="planService" [query]="query">
   <ng-template let-item>
     <mat-list-item>
+
+      <span class="results" *ngIf="item.goals">
+        <app-item-stack [itemStack]="goal" *ngFor="let goal of item.goals">
+        </app-item-stack>
+      </span>
+
       <a routerLink="/plan/{{item._id}}">{{ item.title }}</a>
+
+      <button mat-button (click)="removePlan(item)">
+        REMOVE
+      </button>
     </mat-list-item>
   </ng-template>
 </app-paged-list>

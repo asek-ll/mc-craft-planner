@@ -88,6 +88,9 @@ module.exports = function () {
       });
     }
 
+    if (dbName === 'recipes') {
+    }
+
     registerHandler(dbName + '-find', (data, callback) => {
       logger.debug('trigger', dbName + '-find', data);
 

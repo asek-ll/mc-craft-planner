@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { PlansService } from '../plan/plans.service';
 import { Plan } from '../plan/plan';
+import { PagedListComponent } from '../paged-list/paged-list.component';
 
 @Component({
   selector: 'app-plan-list',
@@ -9,16 +10,19 @@ import { Plan } from '../plan/plan';
 })
 export class PlanListComponent implements OnInit {
 
-  public plans: Plan[];
   public query = {};
+  @ViewChild(PagedListComponent) pagedList: PagedListComponent;
 
   constructor(
     public planService: PlansService
   ) { }
 
   ngOnInit() {
-    this.planService.find({}).then(plans => {
-      this.plans = plans;
+  }
+
+  public removePlan(plan: Plan) {
+    this.planService.deleteItem(plan).then(() => {
+      this.pagedList.loadItemPage(this.pagedList.pageIndex);
     });
   }
 

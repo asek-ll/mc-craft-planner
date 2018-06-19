@@ -1,0 +1,21 @@
+<app-paged-list *ngIf="rulesService" [itemsService]="rulesService" [query]="query">
+  <ng-template let-item>
+    <mat-list-item>
+      <span class="results" *ngIf="item.result">
+        <app-item-stack [itemStack]="result" *ngFor="let result of item.result">
+        </app-item-stack>
+      </span>
+
+      <mat-icon class="recipe-arrow" >arrow_backward</mat-icon>
+
+      <span class="ingredients" *ngIf="item.ingredients">
+        <app-item-stack [itemStack]="ingredient" *ngFor="let ingredient of item.ingredients">
+        </app-item-stack>
+      </span>
+
+      <button mat-button (click)="removeRule(item)">
+        REMOVE
+      </button>
+    </mat-list-item>
+  </ng-template>
+</app-paged-list>

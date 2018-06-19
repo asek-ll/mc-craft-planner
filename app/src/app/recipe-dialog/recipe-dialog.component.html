@@ -1,3 +1,4 @@
+<mat-checkbox [(ngModel)]="data.allowAutoExpand">Save rule</mat-checkbox>
 <mat-list>
   <mat-list-item *ngFor="let recipe of recipes">
     <app-recipe matLine [configurableRecipe]="recipe"></app-recipe>

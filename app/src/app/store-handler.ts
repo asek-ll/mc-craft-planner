@@ -28,15 +28,12 @@ export abstract class SimpleStoreHandler<T extends StoredItem, I> {
   }
 
   find(query: object, limit?: number, skip?: number): Promise<T[]> {
-    // console.time('storeQuery');
     return new Promise((resolve, reject) => {
       this.requester.requestData(this.collectionName + '-find', {
         query,
         limit,
         skip,
       }, (rawItems: I[]) => {
-        // console.timeEnd('storeQuery');
-        console.log(query);
         resolve(this.convertMultiple(rawItems));
       });
     });
@@ -94,7 +91,7 @@ export abstract class SimpleStoreHandler<T extends StoredItem, I> {
   }
 }
 
-export abstract class StoreHandler<T extends StoredItem> extends SimpleStoreHandler<T, object> {
+export abstract class StoreHandler<T extends StoredItem> extends SimpleStoreHandler<T, StoredItem> {
   constructor(
     requester: DataRequester,
     collectionName: string,
@@ -121,7 +118,7 @@ export abstract class StoreHandler<T extends StoredItem> extends SimpleStoreHand
     return Promise.resolve(jsons.map(json => this.simpleConvertOne(json)));
   }
 
-  protected toRaw(item: T): object {
+  protected toRaw(item: T): T {
     return item;
   }
 

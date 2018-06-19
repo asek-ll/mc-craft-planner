@@ -3,7 +3,7 @@ var _ = require('underscore');
 var Datastore = require('nedb');
 var fs = require('fs');
 
-var rmdir = function(dir) {
+var rmdir = function (dir) {
   var list = fs.readdirSync(dir);
   for (var i = 0; i < list.length; i++) {
     var filename = path.join(dir, list[i]);
@@ -40,15 +40,9 @@ var itemDb = new Datastore({
 
 var items = require(path.join(dataPath, './items.json'));
 
-_.each(items, function(item) {
+_.each(items, function (item) {
   itemDb.insert(item);
 });
-
-//var fluids = require(path.join(dataPath, './fluids.json'));
-
-//_.each(fluids, function(item) {
-//itemDb.insert(item);
-//});
 
 var recipesDb = new Datastore({
   filename: path.join(targetPath, 'recipes.db'),
@@ -57,6 +51,10 @@ var recipesDb = new Datastore({
 
 var recipes = require(path.join(dataPath, './recipes.json'));
 
-_.each(recipes, function(recipe) {
-  recipesDb.insert(recipe);
+_.each(recipes, handler => {
+  var handlerName = handler.title;
+  _.each(handler.recipes, recipe => {
+    recipe.handlerName = handlerName;
+    recipesDb.insert(recipe);
+  });
 });

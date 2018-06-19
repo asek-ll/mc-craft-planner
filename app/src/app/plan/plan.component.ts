@@ -3,10 +3,12 @@ import { Plan, PlanRecipe, CraftingStep } from './plan';
 import { ItemStack, Recipe } from '../recipes/recipe';
 import { iterateListLike } from '@angular/core/src/change_detection/change_detection_util';
 import { Item } from '../items/item';
-import { RecipeDialogComponent } from '../recipe-dialog/recipe-dialog.component';
-import { MatDialog } from '@angular/material';
-import { ActivatedRoute } from '@angular/router';
+import { RecipeDialogComponent, RecipeDialogConfig } from '../recipe-dialog/recipe-dialog.component';
+import { MatDialog, MAT_SORT_HEADER_INTL_PROVIDER_FACTORY } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PlansService } from './plans.service';
+import { crashReporter } from 'electron';
+import { RulesService } from '../rules/rules.service';
 
 @Component({
   selector: 'app-plan',
@@ -22,7 +24,9 @@ export class PlanComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     protected route: ActivatedRoute,
-    private planService: PlansService
+    private planService: PlansService,
+    private ruleService: RulesService,
+    private router: Router
   ) {
   }
 
@@ -109,39 +113,120 @@ export class PlanComponent implements OnInit {
     this.recalcPlan();
   }
 
-  public expandStack(ingredient: ItemStack) {
-    this.dialog.open(RecipeDialogComponent, {
-      height: '600px',
-      width: '800px',
-      data: ingredient.item
-    }).afterClosed().subscribe(result => {
-      if (!result) {
-        return;
-      }
-      const step = new CraftingStep();
-      step.recipe = result as PlanRecipe;
-      step.count = 1;
-
-      step.recipe.result.forEach(res => {
-        if (res.item.sid === ingredient.item.sid) {
-          step.count = Math.ceil(ingredient.size / res.size);
+  private showDialog(item: Item, allowAutoExpand: boolean): Promise<PlanRecipe> {
+    const config: RecipeDialogConfig = {
+      item,
+      allowAutoExpand
+    };
+    return new Promise((resolve) => {
+      this.dialog.open(RecipeDialogComponent, {
+        height: '600px',
+        width: '800px',
+        data: config,
+      }).afterClosed().subscribe(result => {
+        if (result) {
+          resolve(result as PlanRecipe);
         }
       });
-
-
-      this.plan.craftingSteps.push(step);
-      this.recalcPlan();
     });
   }
 
-  private updateOrCreatePlan(plan: Plan): Promise<Plan> {
-    if (plan._id) {
-      return this.planService.updateItem(plan);
+  public expandStack(ingredient: ItemStack) {
+    this.showDialog(ingredient.item, false).then(result => {
+      this.addStep(ingredient, result);
+    });
+  }
+
+  private addStep(ingredient: ItemStack, recipe: PlanRecipe) {
+    const step = new CraftingStep();
+    step.recipe = recipe;
+    step.count = 1;
+
+    step.recipe.result.forEach(res => {
+      if (res.item.sid === ingredient.item.sid) {
+        step.count = Math.ceil(ingredient.size / res.size);
+      }
+    });
+
+    const recipeString = recipe.toString();
+    const containsRecipe = this.plan.craftingSteps.some(cstep => {
+      return recipeString === cstep.recipe.toString();
+    });
+
+    if (containsRecipe) {
+      return;
     }
-    return this.planService.insertItem(plan);
+
+    this.plan.craftingSteps.push(step);
+
+    const stepsWithInputs: Map<string, number[]> = new Map();
+
+    this.plan.craftingSteps.forEach((cstep, stepIndex) => {
+      cstep.recipe.ingredients.forEach(stack => {
+        const steps = stepsWithInputs.get(stack.item.sid) || [];
+        steps.push(stepIndex);
+        stepsWithInputs.set(stack.item.sid, steps);
+      });
+    });
+
+    const parentsMap: Map<number, number[]> = new Map();
+    const stepsToComplete: number[] = [];
+    this.plan.craftingSteps.forEach((cstep, stepIndex) => {
+      const allParents: number[] = [];
+      cstep.recipe.result.forEach(stack => {
+        const itemParents = stepsWithInputs.get(stack.item.sid) || [];
+        allParents.push(...itemParents.filter(parentIndex => parentIndex !== stepIndex));
+      });
+      parentsMap.set(stepIndex, allParents);
+      stepsToComplete.push(stepIndex);
+    });
+
+    const sortedSteps: CraftingStep[] = [];
+    while (stepsToComplete.length > 0) {
+      for (let i = 0; i < stepsToComplete.length; i++) {
+        const stepIndex = stepsToComplete[i];
+        const parents = parentsMap.get(stepIndex);
+        const isResolved = parents.every(parentStepId => {
+          return stepsToComplete.indexOf(parentStepId) < 0;
+        });
+        if (isResolved) {
+          sortedSteps.push(this.plan.craftingSteps[stepIndex]);
+          stepsToComplete.splice(i, 1);
+          break;
+        }
+      }
+    }
+
+    this.plan.craftingSteps = sortedSteps;
+
+    this.recalcPlan();
+  }
+
+  public autoExpandStack(stack: ItemStack) {
+    this.ruleService.getRulesRecursive(stack.item.sid).then(rules => {
+      if (rules.length > 0) {
+        rules.forEach(rule => {
+          const planRecipe = new PlanRecipe();
+
+          planRecipe.ingredients = rule.ingredients;
+          planRecipe.result = rule.result;
+
+          this.addStep(planRecipe.result[0], planRecipe);
+        });
+      } else {
+        this.showDialog(stack.item, true).then(result => {
+          this.autoExpandStack(stack);
+        });
+      }
+    });
   }
 
   public savePlan(plan: Plan) {
-    this.updateOrCreatePlan(plan);
+    if (plan._id) {
+      return this.planService.updateItem(plan);
+    }
+    this.planService.insertItem(plan).then(savedPlan => {
+      this.router.navigate(['/plan/' + savedPlan._id]);
+    });
   }
 }

@@ -8,6 +8,11 @@ export class ItemStack {
   ) { }
 }
 
+export class RawItemStack {
+  sid: string;
+  size: number;
+}
+
 export class Recipe extends StoredItem {
   handlerName: string;
   result: ItemStack[][];

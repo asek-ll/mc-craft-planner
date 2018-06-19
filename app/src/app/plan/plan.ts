@@ -1,7 +1,6 @@
 import { StoredItem } from '../stored-item';
-import { ItemStack } from '../recipes/recipe';
+import { ItemStack, RawItemStack } from '../recipes/recipe';
 import { Item } from '../items/item';
-import { RawItemStack } from '../recipes/recipes.service';
 
 export class Plan extends StoredItem {
   title: string;
@@ -13,6 +12,11 @@ export class Plan extends StoredItem {
 export class PlanRecipe {
   result: ItemStack[];
   ingredients: ItemStack[];
+
+  toString(): string {
+    return this.result.map(stack => stack.item.sid + 'x' + stack.size).join('&') + '>'
+      + this.ingredients.map(stack => stack.item.sid + 'x' + stack.size).join('&');
+  }
 }
 
 export class CraftingStep {

@@ -28,6 +28,8 @@ import { PlanComponent } from './plan/plan.component';
 import { PlanListComponent } from './plan-list/plan-list.component';
 import { PlansService } from './plan/plans.service';
 import { RecipeDialogComponent } from './recipe-dialog/recipe-dialog.component';
+import { RulesService } from './rules/rules.service';
+import { RulesComponent } from './rules/rules.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +48,8 @@ import { RecipeDialogComponent } from './recipe-dialog/recipe-dialog.component';
     ItemPickerComponent,
     PlanComponent,
     PlanListComponent,
-    RecipeDialogComponent
+    RecipeDialogComponent,
+    RulesComponent
   ],
   imports: [
     BrowserModule,
@@ -77,6 +80,9 @@ import { RecipeDialogComponent } from './recipe-dialog/recipe-dialog.component';
       path: 'plan-new',
       component: PlanComponent
     }, {
+      path: 'rules',
+      component: RulesComponent
+    }, {
       path: '',
       redirectTo: '/items',
       pathMatch: 'full'
@@ -95,6 +101,7 @@ import { RecipeDialogComponent } from './recipe-dialog/recipe-dialog.component';
     RecipesService,
     DataRequester,
     PlansService,
+    RulesService,
   ],
   bootstrap: [AppComponent],
 })

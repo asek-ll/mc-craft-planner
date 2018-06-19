@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RecipesService } from '../recipes/recipes.service';
-import { Recipe } from '../recipes/recipe';
+import { Recipe, ItemStack } from '../recipes/recipe';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -25,6 +25,21 @@ export class RecipeDetailComponent implements OnInit {
         this.recipe = recipe;
       });
     });
+  }
+
+  public addIngredient(ingredients: ItemStack[][]) {
+    ingredients.push([]);
+  }
+
+  public removeIngredient(ingredients: ItemStack[][], ingredient: ItemStack[]) {
+    const index = ingredients.indexOf(ingredient);
+    if (index >= 0) {
+      ingredients.splice(index, 1);
+    }
+  }
+
+  public saveRecipe(recipe: Recipe) {
+    this.recipeService.updateItem(recipe);
   }
 
 }

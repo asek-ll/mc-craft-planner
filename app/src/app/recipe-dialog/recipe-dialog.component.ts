@@ -4,6 +4,12 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Item } from '../items/item';
 import { RecipesService } from '../recipes/recipes.service';
 import { PlanRecipe } from '../plan/plan';
+import { RulesService } from '../rules/rules.service';
+
+export class RecipeDialogConfig {
+  item: Item;
+  allowAutoExpand: boolean;
+}
 
 @Component({
   selector: 'app-recipe-dialog',
@@ -15,13 +21,14 @@ export class RecipeDialogComponent implements OnInit {
   public recipes: ConfigurableRecipe[] = [];
 
   constructor(public dialogRef: MatDialogRef<RecipeDialogComponent, PlanRecipe>,
-    @Inject(MAT_DIALOG_DATA) public data: Item,
-    public recipesService: RecipesService) {
+    @Inject(MAT_DIALOG_DATA) public data: RecipeDialogConfig,
+    public recipesService: RecipesService,
+    private ruleService: RulesService) {
 
   }
 
   ngOnInit() {
-    this.recipesService.getRecipesForItemSid(this.data.sid).then(recipes => {
+    this.recipesService.getRecipesForItemSid(this.data.item.sid).then(recipes => {
       this.recipes = recipes.map(recipe => new ConfigurableRecipe(recipe));
     });
   }
@@ -31,19 +38,34 @@ export class RecipeDialogComponent implements OnInit {
     planRecipe.result = [];
 
     recipe.result.forEach(result => {
-      planRecipe.result.push(result.getActive());
+      const active = result.getActive();
+      if (active) {
+        planRecipe.result.push(active);
+      }
     });
 
     const planIngredients = [];
 
     recipe.ingredients.forEach(ingredients => {
-      planIngredients.push(ingredients.getActive());
+      const active = ingredients.getActive();
+      if (active) {
+        planIngredients.push(active);
+      }
     });
 
     planRecipe.ingredients = this.compactIngredients(planIngredients);
 
-
-    this.dialogRef.close(planRecipe);
+    if (this.data.allowAutoExpand) {
+      this.ruleService.insertItem({
+        _id: undefined,
+        ingredients: planRecipe.ingredients,
+        result: planRecipe.result,
+      }).then(() => {
+        this.dialogRef.close(planRecipe);
+      });
+    } else {
+      this.dialogRef.close(planRecipe);
+    }
   }
 
   private compactIngredients(stacks: ItemStack[]): ItemStack[] {
