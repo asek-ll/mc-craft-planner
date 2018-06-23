@@ -10,8 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "electron": "^1.7.9",
-    "log4js": "^2.3.7",
+    "electron": "^2.0.3",
+    "log4js": "^2.9.0",
     "nedb": "^1.8.0",
     "ng-cli-electron": "^1.2.1"
   }
