@@ -19,6 +19,9 @@ export class RecipeDialogConfig {
 export class RecipeDialogComponent implements OnInit {
 
   public recipes: ConfigurableRecipe[] = [];
+  private unfilteredRecipes: ConfigurableRecipe[] = [];
+
+  public recipeFilter = '';
 
   constructor(public dialogRef: MatDialogRef<RecipeDialogComponent, PlanRecipe>,
     @Inject(MAT_DIALOG_DATA) public data: RecipeDialogConfig,
@@ -29,7 +32,30 @@ export class RecipeDialogComponent implements OnInit {
 
   ngOnInit() {
     this.recipesService.getRecipesForItemSid(this.data.item.sid).then(recipes => {
-      this.recipes = recipes.map(recipe => new ConfigurableRecipe(recipe));
+      this.unfilteredRecipes = recipes.map(recipe => new ConfigurableRecipe(recipe));
+      this.recipes = this.getFilteredRecipes();
+    });
+  }
+
+  private getFilteredRecipes(): ConfigurableRecipe[] {
+    if (!this.recipeFilter) {
+      return this.unfilteredRecipes;
+    }
+    const recipeFilter = this.recipeFilter.toLowerCase();
+    return this.unfilteredRecipes.filter(recipe => {
+      if (recipe.recipe.handlerName.toLowerCase().indexOf(recipeFilter) >= 0) {
+        return true;
+      }
+
+      return recipe.ingredients.some(ingredient => {
+        const active = ingredient.getActive();
+
+        if (active.item.displayName.toLowerCase().indexOf(recipeFilter) >= 0) {
+          return true;
+        }
+
+        return false;
+      });
     });
   }
 
@@ -84,5 +110,7 @@ export class RecipeDialogComponent implements OnInit {
 
     return Array.from(sidMap.values());
   }
-
+  public onUpdateRecipeFilter() {
+    this.recipes = this.getFilteredRecipes();
+  }
 }

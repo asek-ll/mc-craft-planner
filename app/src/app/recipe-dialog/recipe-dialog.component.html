@@ -1,3 +1,6 @@
+<mat-form-field class="recipe-filter">
+  <input matInput [(ngModel)]="recipeFilter" (input)="onUpdateRecipeFilter($event)">
+</mat-form-field>
 <mat-checkbox [(ngModel)]="data.allowAutoExpand">Save rule</mat-checkbox>
 <mat-list>
   <mat-list-item *ngFor="let recipe of recipes">
