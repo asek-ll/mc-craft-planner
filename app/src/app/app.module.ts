@@ -30,6 +30,7 @@ import { PlansService } from './plan/plans.service';
 import { RecipeDialogComponent } from './recipe-dialog/recipe-dialog.component';
 import { RulesService } from './rules/rules.service';
 import { RulesComponent } from './rules/rules.component';
+import { CraftGraphComponent } from './craft-graph/craft-graph.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { RulesComponent } from './rules/rules.component';
     PlanComponent,
     PlanListComponent,
     RecipeDialogComponent,
-    RulesComponent
+    RulesComponent,
+    CraftGraphComponent
   ],
   imports: [
     BrowserModule,
