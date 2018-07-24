@@ -4,7 +4,26 @@
 <mat-checkbox [(ngModel)]="data.allowAutoExpand">Save rule</mat-checkbox>
 <mat-list>
   <mat-list-item *ngFor="let recipe of recipes">
-    <app-recipe matLine [configurableRecipe]="recipe"></app-recipe>
+
+    <span class="results" *ngIf="recipe.result">
+
+      <span *ngFor="let result of recipe.result">
+        <app-positioned-item-stack [item]="result">
+        </app-positioned-item-stack>
+        <input type="checkbox" [(ngModel)]="result.selected" />
+      </span>
+
+    </span>
+
+    <a routerLink="/recipe/{{recipe.recipe._id}}">
+      <mat-icon class="recipe-arrow" title="{{recipe.recipe.handlerName}}">arrow_backward</mat-icon>
+    </a>
+
+    <span class="ingredients" *ngIf="recipe.ingredients">
+      <app-positioned-item-stack [item]="ingredient" *ngFor="let ingredient of recipe.ingredients">
+      </app-positioned-item-stack>
+    </span>
+
     <button mat-button (click)="select(recipe)">
       SELECT
     </button>

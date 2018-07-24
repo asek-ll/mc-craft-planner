@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { Recipe, ItemStack, ConfigurableRecipe } from '../recipes/recipe';
+import { Recipe, ItemStack, ConfigurableRecipe, ConfigurableItemStack } from '../recipes/recipe';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Item } from '../items/item';
 import { RecipesService } from '../recipes/recipes.service';
@@ -11,6 +11,25 @@ export class RecipeDialogConfig {
   allowAutoExpand: boolean;
 }
 
+export class ConfigurableSelectableItemStack extends ConfigurableItemStack {
+  public selected = true;
+
+  constructor(public stacks: ItemStack[]) {
+    super(stacks);
+  }
+
+}
+
+class ConfigurableSelectableRecipe {
+  public result: ConfigurableSelectableItemStack[];
+  public ingredients: ConfigurableItemStack[];
+
+  constructor(public recipe: Recipe) {
+    this.result = recipe.result.map(stacks => new ConfigurableSelectableItemStack(stacks));
+    this.ingredients = recipe.ingredients.map(stacks => new ConfigurableItemStack(stacks));
+  }
+}
+
 @Component({
   selector: 'app-recipe-dialog',
   templateUrl: './recipe-dialog.component.html',
@@ -18,8 +37,8 @@ export class RecipeDialogConfig {
 })
 export class RecipeDialogComponent implements OnInit {
 
-  public recipes: ConfigurableRecipe[] = [];
-  private unfilteredRecipes: ConfigurableRecipe[] = [];
+  public recipes: ConfigurableSelectableRecipe[] = [];
+  private unfilteredRecipes: ConfigurableSelectableRecipe[] = [];
 
   public recipeFilter = '';
 
@@ -32,12 +51,12 @@ export class RecipeDialogComponent implements OnInit {
 
   ngOnInit() {
     this.recipesService.getRecipesForItemSid(this.data.item.sid).then(recipes => {
-      this.unfilteredRecipes = recipes.map(recipe => new ConfigurableRecipe(recipe));
+      this.unfilteredRecipes = recipes.map(recipe => new ConfigurableSelectableRecipe(recipe));
       this.recipes = this.getFilteredRecipes();
     });
   }
 
-  private getFilteredRecipes(): ConfigurableRecipe[] {
+  private getFilteredRecipes(): ConfigurableSelectableRecipe[] {
     if (!this.recipeFilter) {
       return this.unfilteredRecipes;
     }
@@ -59,13 +78,13 @@ export class RecipeDialogComponent implements OnInit {
     });
   }
 
-  select(recipe: ConfigurableRecipe) {
+  select(recipe: ConfigurableSelectableRecipe) {
     const planRecipe = new PlanRecipe();
     planRecipe.result = [];
 
     recipe.result.forEach(result => {
       const active = result.getActive();
-      if (active) {
+      if (active && result.selected) {
         planRecipe.result.push(active);
       }
     });
