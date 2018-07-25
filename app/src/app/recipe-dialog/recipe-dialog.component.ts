@@ -98,7 +98,7 @@ export class RecipeDialogComponent implements OnInit {
       }
     });
 
-    planRecipe.ingredients = this.compactIngredients(planIngredients);
+    planRecipe.ingredients = planIngredients;
 
     if (this.data.allowAutoExpand) {
       this.ruleService.insertItem({
@@ -113,22 +113,6 @@ export class RecipeDialogComponent implements OnInit {
     }
   }
 
-  private compactIngredients(stacks: ItemStack[]): ItemStack[] {
-    const sidMap: Map<string, ItemStack> = new Map();
-
-    stacks.reduce((map, stack) => {
-      const item = stack.item;
-      const stored = map.get(item.sid);
-      const newValue = stored ? new ItemStack(item, stored.size + stack.size) : stack;
-
-      map.set(item.sid, newValue);
-
-      return map;
-    }, sidMap);
-
-
-    return Array.from(sidMap.values());
-  }
   public onUpdateRecipeFilter() {
     this.recipes = this.getFilteredRecipes();
   }

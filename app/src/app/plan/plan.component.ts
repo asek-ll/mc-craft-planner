@@ -1,13 +1,11 @@
 import { Component, OnInit, SimpleChanges, OnChanges, Output, Input, ViewChild } from '@angular/core';
 import { Plan, PlanRecipe, CraftingStep } from './plan';
 import { ItemStack, Recipe } from '../recipes/recipe';
-import { iterateListLike } from '@angular/core/src/change_detection/change_detection_util';
 import { Item } from '../items/item';
 import { RecipeDialogComponent, RecipeDialogConfig } from '../recipe-dialog/recipe-dialog.component';
 import { MatDialog, MAT_SORT_HEADER_INTL_PROVIDER_FACTORY } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PlansService } from './plans.service';
-import { crashReporter } from 'electron';
 import { RulesService } from '../rules/rules.service';
 import { CraftGraphComponent } from '../craft-graph/craft-graph.component';
 
@@ -74,16 +72,13 @@ export class PlanComponent implements OnInit {
 
     this.plan.craftingSteps.forEach(step => {
 
-      let count = 0;
-
-      if (step.recipe.result.length > 0) {
-        const stack = step.recipe.result[0];
+      const count = step.recipe.result.reduce((maxCount, stack) => {
         const requiredCount = itemsCount.get(stack.item.sid) || 0;
-
         if (requiredCount < 0) {
-          count = Math.ceil(-requiredCount / stack.size);
+          return Math.max(maxCount, Math.ceil(-requiredCount / stack.size));
         }
-      }
+        return maxCount;
+      }, 0);
 
       step.count = count;
 
@@ -142,20 +137,17 @@ export class PlanComponent implements OnInit {
 
   public expandStack(ingredient: ItemStack) {
     this.showDialog(ingredient.item, false).then(result => {
-      this.addStep(ingredient, result);
+      this.addStep(result);
     });
   }
 
-  private addStep(ingredient: ItemStack, recipe: PlanRecipe) {
+  private addStep(verboseRecipe: PlanRecipe) {
+
+    const recipe = verboseRecipe.compact();
+
     const step = new CraftingStep();
     step.recipe = recipe;
-    step.count = 1;
-
-    step.recipe.result.forEach(res => {
-      if (res.item.sid === ingredient.item.sid) {
-        step.count = Math.ceil(ingredient.size / res.size);
-      }
-    });
+    step.count = 0;
 
     const recipeString = recipe.toString();
     const containsRecipe = this.plan.craftingSteps.some(cstep => {
@@ -220,7 +212,7 @@ export class PlanComponent implements OnInit {
           planRecipe.ingredients = rule.ingredients;
           planRecipe.result = rule.result;
 
-          this.addStep(planRecipe.result[0], planRecipe);
+          this.addStep(planRecipe);
         });
       } else {
         this.showDialog(stack.item, true).then(result => {

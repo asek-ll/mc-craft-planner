@@ -25,12 +25,15 @@
           REMOVE
         </button>
       </div>
-      <button mat-button (click)="addIngredient(recipe.ingredient)">
+      <button mat-button (click)="addIngredient(recipe.ingredients)">
         ADD
       </button>
     </div>
   </div>
   <button mat-raised-button (click)="saveRecipe(recipe)">
     SAVE
+  </button>
+  <button mat-raised-button *ngIf="recipe._id" (click)="deleteRecipe(recipe)">
+    DELETE
   </button>
 </div>

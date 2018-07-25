@@ -73,6 +73,9 @@ import { CraftGraphComponent } from './craft-graph/craft-graph.component';
       path: 'recipe/:id',
       component: RecipeDetailComponent
     }, {
+      path: 'recipe-new/:sid',
+      component: RecipeDetailComponent
+    }, {
       path: 'plans',
       component: PlanListComponent
     }, {

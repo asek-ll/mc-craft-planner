@@ -3,6 +3,7 @@ import { ItemComponent } from '../item/item.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ItemsService } from '../items/items.service';
 import { RecipesService } from '../recipes/recipes.service';
+import { RulesService } from '../rules/rules.service';
 
 @Component({
   selector: 'app-item-uses',
@@ -15,9 +16,10 @@ export class ItemUsesComponent extends ItemComponent implements OnInit {
     router: Router,
     route: ActivatedRoute,
     itemsService: ItemsService,
-    recipeService: RecipesService
+    recipeService: RecipesService,
+    rulesService: RulesService
   ) {
-    super(router, route, itemsService, recipeService);
+    super(router, route, itemsService, recipeService, rulesService);
   }
 
   protected getQueryBySid(sid: string): object {

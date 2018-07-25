@@ -1,7 +1,8 @@
 <p *ngIf="item">
   <app-item-icon [item]="item"></app-item-icon>
   {{ item.displayName }} ( {{ item.name }} )
-  <a routerLink="/uses/{{item.sid}}">Uses</a>
+  <a routerLink="/uses/{{item.sid}}">Uses</a><br />
+  <a routerLink="/recipe-new/{{item.sid}}">Create recipe</a>
 </p>
 
 <app-paged-list *ngIf="recipeService" [itemsService]="recipeService" [query]="query">
@@ -11,3 +12,22 @@
     </mat-list-item>
   </ng-template>
 </app-paged-list>
+
+<div *ngIf="rule">
+  SelectedRules:
+  <span class="results" *ngIf="rule.result">
+    <app-item-stack [itemStack]="result" *ngFor="let result of rule.result">
+    </app-item-stack>
+  </span>
+
+  <mat-icon class="recipe-arrow">arrow_backward</mat-icon>
+
+  <span class="ingredients" *ngIf="rule.ingredients">
+    <app-item-stack [itemStack]="ingredient" *ngFor="let ingredient of rule.ingredients">
+    </app-item-stack>
+  </span>
+
+  <button mat-button (click)="removeRule(rule)">
+    REMOVE
+  </button>
+</div>
