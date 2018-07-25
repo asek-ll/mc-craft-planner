@@ -17,14 +17,14 @@
     <mat-list-item *ngFor="let step of plan.craftingSteps">
       <div class="crafting-step">
         <span class="step-count">
-          {{ step.count }} x 
+          {{ step.count }} x
         </span>
         <span class="results" *ngIf="step.recipe.result">
           <app-item-stack [itemStack]="result" *ngFor="let result of step.recipe.result">
           </app-item-stack>
         </span>
 
-        <mat-icon class="recipe-arrow" >arrow_backward</mat-icon>
+        <mat-icon class="recipe-arrow">arrow_backward</mat-icon>
 
         <span class="ingredients" *ngIf="step.recipe.ingredients">
           <app-item-stack [itemStack]="ingredient" *ngFor="let ingredient of step.recipe.ingredients">
@@ -44,8 +44,8 @@
   </mat-toolbar>
   <mat-list class="required-ingredients ingredient-list">
     <mat-list-item *ngFor="let ingredient of requiredItems">
-    <app-item-stack [itemStack]="ingredient">
-    </app-item-stack>
+      <app-item-stack [itemStack]="ingredient">
+      </app-item-stack>
       <button mat-button (click)="expandStack(ingredient)">
         EXPAND
       </button>
@@ -66,7 +66,10 @@
   </mat-list>
 
   <mat-toolbar color="primary">
-   Graph
+    Graph
+    <button mat-button (click)="toggleGraph()">
+      TOGGLE
+    </button>
   </mat-toolbar>
-  <app-craft-graph [plan]="plan"></app-craft-graph>
+  <app-craft-graph *ngIf="isGraphVisible" [plan]="plan"></app-craft-graph>
 </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, SimpleChanges, OnChanges, Output, Input } from '@angular/core';
+import { Component, OnInit, SimpleChanges, OnChanges, Output, Input, ViewChild } from '@angular/core';
 import { Plan, PlanRecipe, CraftingStep } from './plan';
 import { ItemStack, Recipe } from '../recipes/recipe';
 import { iterateListLike } from '@angular/core/src/change_detection/change_detection_util';
@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PlansService } from './plans.service';
 import { crashReporter } from 'electron';
 import { RulesService } from '../rules/rules.service';
+import { CraftGraphComponent } from '../craft-graph/craft-graph.component';
 
 @Component({
   selector: 'app-plan',
@@ -17,9 +18,13 @@ import { RulesService } from '../rules/rules.service';
 })
 export class PlanComponent implements OnInit {
 
+  @ViewChild(CraftGraphComponent)
+  private graphComponent: CraftGraphComponent;
+
   public plan: Plan;
   public requiredItems: ItemStack[] = [];
   public results: ItemStack[] = [];
+  public isGraphVisible = false;
 
   constructor(
     public dialog: MatDialog,
@@ -105,6 +110,10 @@ export class PlanComponent implements OnInit {
 
     this.requiredItems = required;
     this.results = results;
+
+    if (this.graphComponent && this.isGraphVisible) {
+      this.graphComponent.updateGraph();
+    }
   }
 
   public removeStep(step: CraftingStep) {
@@ -228,5 +237,12 @@ export class PlanComponent implements OnInit {
     this.planService.insertItem(plan).then(savedPlan => {
       this.router.navigate(['/plan/' + savedPlan._id]);
     });
+  }
+
+  public toggleGraph() {
+    this.isGraphVisible = !this.isGraphVisible;
+    if (this.isGraphVisible && this.graphComponent) {
+      this.graphComponent.updateGraph();
+    }
   }
 }

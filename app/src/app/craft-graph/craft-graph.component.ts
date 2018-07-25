@@ -29,6 +29,7 @@ export class CraftGraphComponent implements OnInit, AfterContentInit {
   @Input() plan: Plan;
 
   private container: d3.Selection<d3.BaseType, {}, null, undefined>;
+  d3Sankey: any;
 
   constructor() { }
 
@@ -47,6 +48,9 @@ export class CraftGraphComponent implements OnInit, AfterContentInit {
     });
 
     this.plan.craftingSteps.forEach(step => {
+      if (step.count === 0) {
+        return;
+      }
       step.recipe.result.forEach(result => {
         links[result.item.sid] = links[result.item.sid] || [];
         step.recipe.ingredients.forEach(ingredient => {
@@ -93,21 +97,11 @@ export class CraftGraphComponent implements OnInit, AfterContentInit {
     return [nodes, nodeLinks];
   }
 
-  private updateGraph() {
-
-    const width = 800;
-    const height = 1000;
-
-
+  public updateGraph() {
     const [nodes, links] = this.getNodesAndLinks();
     this.container.selectAll('*').remove();
 
-    const d3Sankey = sankey()
-      .size([width, height])
-      .nodeWidth(48)
-      .nodePadding(10);
-
-    d3Sankey({
+    this.d3Sankey({
       nodes: nodes, links: links,
     });
 
@@ -199,6 +193,14 @@ export class CraftGraphComponent implements OnInit, AfterContentInit {
     svg.call(zoom);
 
     this.container = container;
+
+
+    const width = 800;
+    const height = 800;
+    this.d3Sankey = sankey()
+      .size([width, height])
+      .nodeWidth(48)
+      .nodePadding(10);
 
     this.updateGraph();
   }
