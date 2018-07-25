@@ -10,10 +10,13 @@
 
 .step-count {
   font-size: 24px;
-  width: 48px;
+  width: 90px;
   display: inline-block;
   text-align: right;
   padding-right: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .ingredients app-item-stack {
